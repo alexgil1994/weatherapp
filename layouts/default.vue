@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-screen bg-gray-300">
     <Navbar/>
     <!-- Pages -->
     <Nuxt />
