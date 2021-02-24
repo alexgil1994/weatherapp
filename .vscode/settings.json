@@ -1,0 +1,27 @@
+{
+  // "eslint.validate": [
+  //   {
+  //     "language": "vue",
+  //     "autoFix": true
+  //   },
+  //   {
+  //     "language": "javascript",
+  //     "autoFix": true
+  //   },
+  //   {
+  //     "language": "javascriptreact",
+  //     "autoFix": true
+  //   }
+  // ],
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  // "eslint.autoFixOnSave": true,
+  // * editor.formatOnSave if true then on save it re-edits the format of code to be more pleasing (multilines)
+  "editor.formatOnSave": false,
+  "vetur.validation.template": true,
+  "editor.tabSize": 2,
+  "files.eol": "\n",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
