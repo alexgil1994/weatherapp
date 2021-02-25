@@ -7,11 +7,11 @@
       </div>
       <!-- Map -->
       <Map/>
-      <div class="md:mt-20 md:mb-24 flex flex-wrap justify-between items-center lg:justify-around">
-        <!-- Location Data -->
-        <LocationData class="my-10 md:my-0 w-full md:w-2/6"/>
+      <div class="flex flex-wrap justify-between items-center md:mt-20 md:mb-32 xl:justify-around">
         <!-- Graph Location Data -->
-        <Graph class="w-full mx-4 mt-10 mb-20 sm:w-3/4 sm:mx-auto md:w-3/6 md:mx-0 md:my-0"/>
+        <Graph class="order-2 w-full mx-4 mt-10 mb-20 sm:w-3/4 sm:mx-auto md:w-3/6 md:mx-0 md:my-0 md:order-1"/>
+        <!-- Location Data -->
+        <LocationData class="order-1 my-10 md:my-0 w-full md:w-2/6 md:order-2"/>
       </div>
       <!-- List of paginated temperatures -->
       <div class="mx-4 pb-32 sm:w-2/3 xl:w-1/2 sm:mx-auto">

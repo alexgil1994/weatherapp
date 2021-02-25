@@ -3,7 +3,7 @@
     <div>
       <div class="w-full">
         <client-only>
-          <highcharts :constructor-type="'stockChart'" :options="chartOptions"></highcharts>
+          <highcharts :options="chartOptions"></highcharts>
         </client-only>
       </div>
     </div>
@@ -15,6 +15,8 @@
     data() {
       return {
         chartOptions: {
+          title: { text: "Temperature 24hr" 
+          },
           series: [
             {
               data: [1, 2, 3, 5, 2, 4, 8, 4, 2, 1, 5]
