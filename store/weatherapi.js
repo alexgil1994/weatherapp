@@ -29,6 +29,7 @@ export const mutations = {
 export const actions = {
   async fetchLocationWeather ( { commit, dispatch } ) { // TODO CHECK
     // The api requests long and lat to be in degrees type of value
+    // TODO LONG LAT MUST BE AS DEGREES VALUES
     await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: 39.0742, lon: 21.8243, at_date: "2021-02-28"}
   } )
     .then(result => {

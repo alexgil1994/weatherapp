@@ -4,7 +4,7 @@
       <client-only>
         <vl-map ref="map" class="map" :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
             <vl-view ref="view" :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation">
-              <vl-geoloc @update:position="geolocPosition = $event">
+              <vl-geoloc v-if="chosenLocation.length == 0" @update:position="geolocPosition = $event">
                 <template slot-scope="geoloc">
                   <vl-feature v-if="geoloc.position" id="position-feature">
                     <vl-geom-point :coordinates="geoloc.position"></vl-geom-point>
@@ -13,15 +13,15 @@
                     </vl-style-box>
                   </vl-feature>
                 </template>
-                <!-- <template v-else>
+              </vl-geoloc>
+                <template v-else>
                   <vl-feature id="position-feature">
                     <vl-geom-point :coordinates="chosenLocation"></vl-geom-point>
                     <vl-style-box>
                       <vl-style-icon src="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" :scale="0.1" :anchor="[0.5, 1]"></vl-style-icon>
                     </vl-style-box>
                   </vl-feature>
-                </template> -->
-              </vl-geoloc>
+                </template>
             </vl-view>
             <vl-layer-tile id="osm">
                 <vl-source-osm></vl-source-osm>
@@ -51,12 +51,9 @@
       getPixel(event) {
         this.pixel.length = 0
         console.log(this.geolocPosition)
-        console.log(event.screenX);
-        console.log(event.screenY);
-        // this.pixel.pixelX = event.screenX
-        // this.pixel.pixelY = event.screenY
-        this.pixel.push(event.screenX)
-        this.pixel.push(event.screenY)
+        console.log(event);
+        this.pixel.push(event.offsetX)
+        this.pixel.push(event.offsetY)
         this.chosenLocation = this.$refs.map.getCoordinateFromPixel(this.pixel)
         console.log(this.chosenLocation)
         // TODO Call axios endpoint
