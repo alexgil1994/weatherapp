@@ -13,6 +13,14 @@
                     </vl-style-box>
                   </vl-feature>
                 </template>
+                <!-- <template v-else>
+                  <vl-feature id="position-feature">
+                    <vl-geom-point :coordinates="chosenLocation"></vl-geom-point>
+                    <vl-style-box>
+                      <vl-style-icon src="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" :scale="0.1" :anchor="[0.5, 1]"></vl-style-icon>
+                    </vl-style-box>
+                  </vl-feature>
+                </template> -->
               </vl-geoloc>
             </vl-view>
             <vl-layer-tile id="osm">
@@ -32,22 +40,26 @@
         center: [2680799.456018, 4615573.515972],
         rotation: 0,
         geolocPosition: undefined,
-        pixel: {
-          pixelX: '',
-          pixelY: ''
-        }
+        chosenLocation: [],
+        pixel: []
       }
+    },
+    mounted () {
+      this.$store.dispatch('weatherapi/fetchLocationWeather')
     },
     methods: {
       getPixel(event) {
+        this.pixel.length = 0
+        console.log(this.geolocPosition)
         console.log(event.screenX);
         console.log(event.screenY);
-        this.pixel.pixelX = event.screenX
-        this.pixel.pixelY = event.screenY
-        console.log(this.geolocPosition)
-        // this.$refs.map.render()
-        // this.$refs.map.refresh()
-        // console.log(this.$refs.map.getCoordinateFromPixel(this.pixel))
+        // this.pixel.pixelX = event.screenX
+        // this.pixel.pixelY = event.screenY
+        this.pixel.push(event.screenX)
+        this.pixel.push(event.screenY)
+        this.chosenLocation = this.$refs.map.getCoordinateFromPixel(this.pixel)
+        console.log(this.chosenLocation)
+        // TODO Call axios endpoint
       }
       
     },
