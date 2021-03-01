@@ -7,10 +7,18 @@ export const state = () => ({
   locationTempMax: null,
   locationHumid: null,
   temperatureList: [],
-  tempTimeList: []
+  tempTimeList: [],
+  page: 1,
+  tempTimeListPage1: [],
+  tempTimeListPage2: [],
+  tempTimeListPage3: [],
+  tempTimeListPage4: []
 })
 
 export const mutations = {
+  setReloadChartDataFlag (state, data) {
+    state.reloadChartDataFlag = data
+  },
   setLocationTemp (state, data) {
     state.locationTemp = data
   },
@@ -26,8 +34,14 @@ export const mutations = {
   setTemperatureList (state, data) {
     state.temperatureList = data
   },
-  setTempTimeList (state, data) {
-    state.tempTimeList = data
+  setPage (state, data) {
+    state.page = data
+  },
+  setTempTimePages (state, page1, page2, page3, page4) {
+    state.tempTimeListPage1 = page1
+    state.tempTimeListPage2 = page2
+    state.tempTimeListPage3 = page3
+    state.tempTimeListPage4 = page4
   },
   sortTempListAsc (state) {
     state.temperatureList.sort(function(a, b){return a-b})
@@ -72,9 +86,29 @@ export const actions = {
       // commit('setLocationTempMax', maxTemp)
 
       // For graph
+      commit('setReloadChartDataFlag', true)
       commit('setTemperatureList', Object.values(result.temperature2m.data))
       // For cards list
-      commit('setTempTimeList', result.temperature2m.data)
+      let page1 = []
+      let page2 = []
+      let page3 = []
+      let page4 = []
+      // Making the Object an array
+      let tempTimeListUnstructured = Object.entries(result.temperature2m.data)
+      for (let i = 0; i <= 3; i++) {
+        page1.push(tempTimeListUnstructured[i])
+      }
+      for (let i = 4; i <= 7; i++) {
+        page2.push(tempTimeListUnstructured[i])
+      }
+      for (let i = 8; i <= 11; i++) {
+        page3.push(tempTimeListUnstructured[i])
+      }
+      for (let i = 12; i <= 15; i++) {
+        page4.push(tempTimeListUnstructured[i])
+      }
+      commit('setTempTimePages', page1, page2, page3, page4)
+      
     })
     .catch(e => {
       console.log(e);
@@ -105,7 +139,19 @@ export const getters = {
   getTemperatureList (state) {
     return state.temperatureList
   },
-  getTempTimeList (state) {
-    return state.tempTimeList
+  getPage (state) {
+    return state.page
+  },
+  getTempTimeListPage (state, getters) {
+    switch(getters.getPage) {
+      case 1:
+        return state.tempTimeListPage1
+      case 2:
+        return state.tempTimeListPage2
+      case 3:
+        return state.tempTimeListPage3
+      case 4:
+        return state.tempTimeListPage4
+    }
   }
 }

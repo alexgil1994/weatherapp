@@ -18,8 +18,19 @@
       reloadFlag: 'weatherapi/getReloadChartDataFlag'
       // todo use watcher to trigger using setdata method again when the flag is turned true and commit to make it false || Or just trigger a refresh of the component somehow
     }),
-    mounted () {
-      this.setLineChartData()
+    // Waiting for new requests
+    watch: {
+      reloadFlag: function(newRequest, oldRequest) {
+        // setTimeout(() => {
+          // TODO force update if watcher didn't work
+        //   this.$forceUpdate();
+        // }, 10000)
+          // TODO test
+        if(newRequest == true) {
+          this.setLineChartData()
+          this.$store.commit('weatherapi/setReloadChartDataFlag', false)
+        }
+      }
     },
     data() {
       return {
@@ -43,7 +54,7 @@
     },
     methods: {
       setLineChartData() {
-        this.chartOptions.series.length == 0
+        this.chartOptions.series.length === 0
         setTimeout(() => {
           console.log(this.tempList)
           this.chartOptions.series.push({
@@ -54,10 +65,6 @@
             }
         })
         }, 2000)
-        // setTimeout(() => {
-          // TODO force update
-        //   this.$forceUpdate();
-        // }, 10000)
       }
     },
   }
