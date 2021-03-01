@@ -45,7 +45,7 @@
       }
     },
     mounted () {
-      this.$store.dispatch('weatherapi/fetchLocationWeather')
+      this.$store.dispatch('weatherapi/fetchLocationWeather24hr')
     },
     methods: {
       getPixel(event) {
@@ -56,7 +56,6 @@
         this.pixel.push(event.offsetY)
         this.chosenLocation = this.$refs.map.getCoordinateFromPixel(this.pixel)
         console.log(this.chosenLocation)
-        // TODO Call axios endpoint
       }
       
     },

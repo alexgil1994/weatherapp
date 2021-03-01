@@ -3,7 +3,7 @@
     <div>
       <div class="w-full">
         <client-only>
-          <highcharts :options="chartOptions"></highcharts>
+          <highcharts ref="chart" :options="chartOptions"></highcharts>
         </client-only>
       </div>
     </div>
@@ -11,18 +11,53 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   export default {
+    computed: mapGetters({
+      tempList: 'weatherapi/getTemperatureList',
+      reloadFlag: 'weatherapi/getReloadChartDataFlag'
+      // todo use watcher to trigger using setdata method again when the flag is turned true and commit to make it false || Or just trigger a refresh of the component somehow
+    }),
+    mounted () {
+      this.setLineChartData()
+    },
     data() {
       return {
         chartOptions: {
           title: { text: "Temperature 24hr" 
           },
-          series: [
-            {
-              data: [1, 2, 3, 5, 2, 4, 8, 4, 2, 1, 5]
+          xAxis: {
+            categories: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
+            title: {
+              text: 'Time'
             }
-          ]
+          },
+          yAxis: {
+            title: {
+              text: 'Degrees'
+            }
+          },
+          series: []
         }
+      }
+    },
+    methods: {
+      setLineChartData() {
+        this.chartOptions.series.length == 0
+        setTimeout(() => {
+          console.log(this.tempList)
+          this.chartOptions.series.push({
+            name: "Chosen Location",
+            data: this.tempList,
+            tooltip: {
+              pointFormat: "Value: {point.y:.0f} C",
+            }
+        })
+        }, 2000)
+        // setTimeout(() => {
+          // TODO force update
+        //   this.$forceUpdate();
+        // }, 10000)
       }
     },
   }
