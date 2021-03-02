@@ -1,5 +1,4 @@
 export const state = () => ({
-  // todo to be swapped with the hardcoded coordinates on the request, setting it through the map component on click
   reloadChartDataFlag: false,
   locationLon: null,
   locationLat: null,
@@ -13,7 +12,9 @@ export const state = () => ({
   tempTimeListPage1: [],
   tempTimeListPage2: [],
   tempTimeListPage3: [],
-  tempTimeListPage4: []
+  tempTimeListPage4: [],
+  tempTimeListPage5: [],
+  tempTimeListPage6: []
 })
 
 export const mutations = {
@@ -44,11 +45,23 @@ export const mutations = {
   setPage (state, data) {
     state.page = data
   },
-  setTempTimePages (state, page1, page2, page3, page4) {
+  setTempTimePage1 (state, page1) {
     state.tempTimeListPage1 = page1
+  },
+  setTempTimePage2 (state, page2) {
     state.tempTimeListPage2 = page2
+  },
+  setTempTimePage3 (state, page3) {
     state.tempTimeListPage3 = page3
+  },
+  setTempTimePage4 (state, page4) {
     state.tempTimeListPage4 = page4
+  },
+  setTempTimePage5 (state, page5) {
+    state.tempTimeListPage5 = page5
+  },
+  setTempTimePage6 (state, page6) {
+    state.tempTimeListPage6 = page6
   },
   sortTempListAsc (state) {
     state.temperatureList.sort(function(a, b){return a-b})
@@ -84,7 +97,7 @@ export const actions = {
     })
   },
   async fetchLocationWeather24hr ( { getters, commit, dispatch } ) {
-    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: getters.getLocationLat, lon: getters.getLocationLon, at_date: "2021-02-28"}
+    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: getters.getLocationLat, lon: getters.getLocationLon, at_date: new Date().toISOString().slice(0,10)}
   } )
     .then(result => {
       console.log(result);
@@ -96,6 +109,8 @@ export const actions = {
       let page2 = []
       let page3 = []
       let page4 = []
+      let page5 = []
+      let page6 = []
       // Making the Object an array
       let tempTimeListUnstructured = Object.entries(result.temperature2m.data)
       for (let i = 0; i <= 3; i++) {
@@ -110,10 +125,20 @@ export const actions = {
       for (let i = 12; i <= 15; i++) {
         page4.push(tempTimeListUnstructured[i])
       }
+      for (let i = 16; i <= 19; i++) {
+        page5.push(tempTimeListUnstructured[i])
+      }
+      for (let i = 20; i <= 23; i++) {
+        page6.push(tempTimeListUnstructured[i])
+      }
       // TODO also save in vuex the object.entries to have it stored so that i can do sorting on that data as they were before destructuring.
       // TODO for this to happen you also need to have the upper code as a separate commit maybe so that both use it this action and that other commit ----^
-      commit('setTempTimePages', page1, page2, page3, page4)
-      
+      commit('setTempTimePage1', page1)
+      commit('setTempTimePage2', page2)
+      commit('setTempTimePage3', page3)
+      commit('setTempTimePage4', page4)
+      commit('setTempTimePage5', page5)
+      commit('setTempTimePage6', page6)
     })
     .catch(e => {
       console.log(e);
@@ -163,6 +188,10 @@ export const getters = {
         return state.tempTimeListPage3
       case 4:
         return state.tempTimeListPage4
+      case 5:
+        return state.tempTimeListPage5
+      case 6:
+        return state.tempTimeListPage6
       default:
         return null
     }
