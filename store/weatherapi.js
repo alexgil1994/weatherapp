@@ -96,6 +96,7 @@ export const actions = {
       dispatch('notification/enableNotification', { text: 'Something went wrong trying to load the data', color: 'red' }, { root: true})
     })
   },
+  // Fetching data for the graph and the paginated cards list
   async fetchLocationWeather24hr ( { getters, commit, dispatch } ) {
     await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: getters.getLocationLat, lon: getters.getLocationLon, at_date: new Date().toISOString().slice(0,10)}
   } )
