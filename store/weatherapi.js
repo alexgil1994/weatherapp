@@ -132,6 +132,7 @@ export const actions = {
       for (let i = 20; i <= 23; i++) {
         page6.push(tempTimeListUnstructured[i])
       }
+      // TODO *** Data from the back end are in a problimatic way to implement sorting ex. {`datetime`: `temperature`, ...} instead of property + value for each.
       // TODO also save in vuex the object.entries to have it stored so that i can do sorting on that data as they were before destructuring.
       // TODO for this to happen you also need to have the upper code as a separate commit maybe so that both use it this action and that other commit ----^
       commit('setTempTimePage1', page1)
