@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div @click="getPixel($event)" class="w-full">
+    <div class="w-full">
       <client-only>
-        <vl-map ref="map" class="map" :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
+        <vl-map data-projection="EPSG:4326" @click="setClickLocation" ref="map" class="map" :load-tiles-while-animating="true" :load-tiles-while-interacting="true">
             <vl-view ref="view" :zoom.sync="zoom" :center.sync="center" :rotation.sync="rotation">
               <vl-geoloc v-if="chosenLocation.length == 0" @update:position="geolocPosition = $event">
                 <template slot-scope="geoloc">
@@ -36,40 +36,43 @@
   export default {
     data() {
       return {
-        zoom: 5.5,
-        center: [2680799.456018, 4615573.515972],
+        zoom: 6.1,
+        center: [23.67858697, 38.23532880],
         rotation: 0,
         geolocPosition: undefined,
         chosenLocation: [],
-        pixel: []
+        pixel: [],
+        clickCoordinate: null,
       }
     },
-    mounted () {
-      this.$store.dispatch('weatherapi/fetchLocationWeather24hr')
+    watch: {
+      geolocPosition(newValue, oldValue) {
+        if (newValue != undefined) {
+          console.log("initttt")
+          console.log(newValue)
+          this.$store.dispatch('weatherapi/setLocationFetchData', newValue)
+        }
+      }
     },
     methods: {
-      getPixel(event) {
-        this.pixel.length = 0
-        console.log(this.geolocPosition)
-        console.log(event);
-        this.pixel.push(event.offsetX)
-        this.pixel.push(event.offsetY)
-        this.chosenLocation = this.$refs.map.getCoordinateFromPixel(this.pixel)
-        console.log(this.chosenLocation)
-      }
-      
-    },
+      setClickLocation(event) {
+        this.clickCoordinate = event.coordinate
+        this.chosenLocation = this.clickCoordinate
+        console.log(this.clickCoordinate)
+        this.$store.dispatch('weatherapi/setLocationFetchData', this.clickCoordinate)
+      },
+    }
   }
 </script>
 
 <style scoped>
 .map {
-  height: 320px;
+  height: 320px
 }
 
 @media only screen and (min-width: 1024px) {
   .map {
-    height: 550px;
+    height: 550px
   }
 }
 </style>

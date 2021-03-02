@@ -17,9 +17,9 @@ import { mapGetters } from 'vuex'
       locTemp: 'weatherapi/getLocationTemp',
       locHumid: 'weatherapi/getLocationHumid',
     }),
-    mounted () {
-      this.$store.dispatch('weatherapi/fetchLocationWeatherLive')
-    },
+    // mounted () {
+    //   this.$store.dispatch('weatherapi/fetchLocationWeatherLive')
+    // },
   }
 </script>
 

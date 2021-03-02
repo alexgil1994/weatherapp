@@ -1,7 +1,8 @@
 export const state = () => ({
   // todo to be swapped with the hardcoded coordinates on the request, setting it through the map component on click
   reloadChartDataFlag: false,
-  location: null,
+  locationLon: null,
+  locationLat: null,
   locationTemp: null,
   locationTempMin: null,
   locationTempMax: null,
@@ -18,6 +19,12 @@ export const state = () => ({
 export const mutations = {
   setReloadChartDataFlag (state, data) {
     state.reloadChartDataFlag = data
+  },
+  setLocationLon (state, data) {
+    state.locationLon = data
+  },
+  setLocationLat (state, data) {
+    state.locationLat = data
   },
   setLocationTemp (state, data) {
     state.locationTemp = data
@@ -52,18 +59,22 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchLocationWeatherLive ( { commit, dispatch } ) {
-    // The api requests long and lat to be in degrees type of value
-    // TODO LONG LAT MUST BE AS DEGREES VALUES
-    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: 39.0742, lon: 21.8243, at_date: new Date().toISOString().substring(0,13)}
+  // Setting location either from geolocation or from clicking
+  setLocationFetchData ( { commit, dispatch }, locationArray ) {
+    commit('setLocationLat', locationArray[1])
+    commit('setLocationLon', locationArray[0])
+    dispatch('fetchLocationWeatherLive')
+    dispatch('fetchLocationWeather24hr')
+  },
+  // Fetching data for specific hour
+  async fetchLocationWeatherLive ( { getters, commit, dispatch } ) {
+    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: getters.getLocationLat, lon: getters.getLocationLon, at_date: new Date().toISOString().substring(0,13)}
   } )
     .then(result => {
       console.log(result);
       // TODO CHECK WHY TIME IS 2 HOURS BACK THAN ACTUAL
       const temp = Math.trunc(Object.values(result.temperature2m.data))
       const humid = Math.trunc(Object.values(result.rh2m.data))
-      console.log(temp);
-      console.log(humid);
       commit('setLocationTemp', temp)
       commit('setLocationHumid', humid)
     })
@@ -72,19 +83,11 @@ export const actions = {
       dispatch('notification/enableNotification', { text: 'Something went wrong trying to load the data', color: 'red' }, { root: true})
     })
   },
-  async fetchLocationWeather24hr ( { commit, dispatch } ) {
-    // The api requests long and lat to be in degrees type of value
-    // TODO LONG LAT MUST BE AS DEGREES VALUES
-    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: 39.0742, lon: 21.8243, at_date: "2021-02-28"}
+  async fetchLocationWeather24hr ( { getters, commit, dispatch } ) {
+    await this.$axios.$get('https://api.draxis.gr/weather/meteo/hourly', { params: { apikey: "4181a631-652a-40a2-a57f-e8338074cc5a", resolution: "6km", lat: getters.getLocationLat, lon: getters.getLocationLon, at_date: "2021-02-28"}
   } )
     .then(result => {
       console.log(result);
-      // Min Max if needed
-      // const minTemp = Math.trunc(Object.values(result.temperature2m_min.data))
-      // const maxTemp = Math.trunc(Object.values(result.temperature2m_max.data))
-      // commit('setLocationTempMin', minTemp)
-      // commit('setLocationTempMax', maxTemp)
-
       // For graph
       commit('setReloadChartDataFlag', true)
       commit('setTemperatureList', Object.values(result.temperature2m.data))
@@ -107,6 +110,8 @@ export const actions = {
       for (let i = 12; i <= 15; i++) {
         page4.push(tempTimeListUnstructured[i])
       }
+      // TODO also save in vuex the object.entries to have it stored so that i can do sorting on that data as they were before destructuring.
+      // TODO for this to happen you also need to have the upper code as a separate commit maybe so that both use it this action and that other commit ----^
       commit('setTempTimePages', page1, page2, page3, page4)
       
     })
@@ -120,6 +125,12 @@ export const actions = {
 export const getters = {
   getReloadChartDataFlag (state) {
     return state.reloadChartDataFlag
+  },
+  getLocationLon (state) {
+    return state.locationLon
+  },
+  getLocationLat (state) {
+    return state.locationLat
   },
   getLocationTemp (state) {
     return state.locationTemp
@@ -152,6 +163,8 @@ export const getters = {
         return state.tempTimeListPage3
       case 4:
         return state.tempTimeListPage4
+      default:
+        return null
     }
   }
 }
